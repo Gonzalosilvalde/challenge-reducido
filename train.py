@@ -3,12 +3,13 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Subset, random_split, DataLoader
 from dataloader import DataLoaderPyTorch
-from net import MetaModel 
+from net import Net 
 from torch.cuda.amp import GradScaler, autocast
 from tqdm import tqdm
 import random
 import os
 import matplotlib.pyplot as plt
+import wandb
 
 
 
@@ -100,20 +101,31 @@ def load_checkpoint(filename, model, optimizer, scaler):
         return 0, 0, 0
 
 def main():
+
+    wandb.init(project="indios")
+
     # Parámetros
-    epochs = 40
+    epochs = 4000
     learning_rate = 0.001
-    batch_size = 1
+    batch_size = 128
     num_workers = 4
     samples_per_epoch = 20  # Número de muestras a usar por época
     checkpoint_dir = "checkpoints"
     
+    # Log hyperparameters
+    wandb.config.update({
+        "epochs": epochs,
+        "learning_rate": learning_rate,
+        "batch_size": batch_size,
+        "samples_per_epoch": samples_per_epoch
+    })
+
     # Crear directorio para checkpoints si no existe
     os.makedirs(checkpoint_dir, exist_ok=True)
     
     # Preparar los datos
-    train_file = "train_data.h5"
-    test_file = "test_data.h5"
+    train_file = "data/train_data.h5"
+    test_file = "data/test_data.h5"
     
     data_loader = DataLoaderPyTorch(train_file, test_file, batch_size=batch_size, num_workers=num_workers)
     full_train_loader = data_loader.get_train_loader()
@@ -130,7 +142,11 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # Usar el nuevo modelo GradientBoostedCNNRF
-    model = MetaModel().to(device)
+    #model = MetaModel().to(device)    #model = MetaModel().to(device)
+    model = Net().to(device)
+
+    wandb.watch(model)  # Watch the model to log gradients and model parameters
+
     print(f"Información del modelo: {model}")
     
     criterion = nn.BCEWithLogitsLoss()
@@ -185,7 +201,14 @@ def main():
         print(f'Pérdida de validación: {val_loss:.4f}, Precisión de validación: {val_accuracy:.4f}')
         
         # Guardar checkpoint después de cada época
-        save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, f"checkpoint_epoch_{epoch+1}.pth"))
+        #save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, f"checkpoint_epoch_{epoch+1}.pth"))
+        wandb.log({
+            "epoch": epoch + 1,
+            "train_loss": train_loss,
+            "train_accuracy": train_accuracy,
+            "val_loss": val_loss,
+            "val_accuracy": val_accuracy
+        })
         
         # Guardar el último checkpoint (sobrescribir)
         save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, last_checkpoint)
@@ -194,6 +217,8 @@ def main():
         if val_loss < best_loss:
             best_loss = val_loss
             save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "best_model.pth"))
+    # Finish the wandb run
+    wandb.finish()
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,440 @@
+Train loader batch shapes:
+Batch input shape: torch.Size([128, 16, 16, 6])
+Batch labels shape: torch.Size([128])
+Test loader batch shapes:
+Batch shape: torch.Size([128, 16, 16, 6])
+Información del modelo: Net(
+  (conv1): Conv2d(6, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (bn1): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (pool): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (conv2): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (bn2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (conv3): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (bn3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (fc1): Linear(in_features=256, out_features=128, bias=True)
+  (fc2): Linear(in_features=128, out_features=1, bias=True)
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+/home/mateo/projects/ai/indiofinder/train.py:154: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+No se encontró el checkpoint: checkpoints/last_checkpoint.pth
+Se han guardado los 6 canales de una imagen de muestra.
+Entrenando:   0%|                                                            | 0/1 [00:00<?, ?it/s]/home/mateo/projects/ai/indiofinder/train.py:29: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.90s/it]
+Validando:   0%|                                                             | 0/1 [00:00<?, ?it/s]/home/mateo/projects/ai/indiofinder/train.py:64: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.98s/it]
+Época [1/4000]
+Pérdida de entrenamiento: 0.7158, Precisión de entrenamiento: 0.5375
+Pérdida de validación: 0.6988, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.06s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.05s/it]
+Época [2/4000]
+Pérdida de entrenamiento: 0.6536, Precisión de entrenamiento: 0.6500
+Pérdida de validación: 0.7224, Precisión de validación: 0.5000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.82s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:13<00:00, 14.00s/it]
+Época [3/4000]
+Pérdida de entrenamiento: 0.6924, Precisión de entrenamiento: 0.5500
+Pérdida de validación: 0.6967, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.85s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.09s/it]
+Época [4/4000]
+Pérdida de entrenamiento: 0.6954, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.7188, Precisión de validación: 0.5000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:54<00:00, 54.47s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.22s/it]
+Época [5/4000]
+Pérdida de entrenamiento: 0.6877, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.7164, Precisión de validación: 0.5000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.32s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.05s/it]
+Época [6/4000]
+Pérdida de entrenamiento: 0.7133, Precisión de entrenamiento: 0.4500
+Pérdida de validación: 0.6899, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.79s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.69s/it]
+Época [7/4000]
+Pérdida de entrenamiento: 0.6983, Precisión de entrenamiento: 0.4750
+Pérdida de validación: 0.6674, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.09s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.20s/it]
+Época [8/4000]
+Pérdida de entrenamiento: 0.7016, Precisión de entrenamiento: 0.4750
+Pérdida de validación: 0.7099, Precisión de validación: 0.5000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.39s/it]
+Validando: 100%|█████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.05s/it]
+Época [9/4000]
+Pérdida de entrenamiento: 0.6954, Precisión de entrenamiento: 0.4500
+Pérdida de validación: 0.7343, Precisión de validación: 0.4000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.20s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.23s/it]
+Época [10/4000]
+Pérdida de entrenamiento: 0.6860, Precisión de entrenamiento: 0.5375
+Pérdida de validación: 0.6848, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.74s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.67s/it]
+Época [11/4000]
+Pérdida de entrenamiento: 0.7001, Precisión de entrenamiento: 0.4625
+Pérdida de validación: 0.6708, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.75s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.08s/it]
+Época [12/4000]
+Pérdida de entrenamiento: 0.6914, Precisión de entrenamiento: 0.4500
+Pérdida de validación: 0.6766, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.08s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.09s/it]
+Época [13/4000]
+Pérdida de entrenamiento: 0.6727, Precisión de entrenamiento: 0.5875
+Pérdida de validación: 0.7121, Precisión de validación: 0.4500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.80s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.06s/it]
+Época [14/4000]
+Pérdida de entrenamiento: 0.6941, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.6830, Precisión de validación: 0.4500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.31s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.86s/it]
+Época [15/4000]
+Pérdida de entrenamiento: 0.6864, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.6565, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.07s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.13s/it]
+Época [16/4000]
+Pérdida de entrenamiento: 0.6750, Precisión de entrenamiento: 0.4625
+Pérdida de validación: 0.6689, Precisión de validación: 0.5000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.31s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.25s/it]
+Época [17/4000]
+Pérdida de entrenamiento: 0.6794, Precisión de entrenamiento: 0.5125
+Pérdida de validación: 0.6608, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.71s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.23s/it]
+Época [18/4000]
+Pérdida de entrenamiento: 0.6876, Precisión de entrenamiento: 0.5000
+Pérdida de validación: 0.8086, Precisión de validación: 0.3000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.43s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.11s/it]
+Época [19/4000]
+Pérdida de entrenamiento: 0.6845, Precisión de entrenamiento: 0.4375
+Pérdida de validación: 0.5721, Precisión de validación: 0.7500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.21s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.25s/it]
+Época [20/4000]
+Pérdida de entrenamiento: 0.6866, Precisión de entrenamiento: 0.4250
+Pérdida de validación: 0.6524, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.70s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.59s/it]
+Época [21/4000]
+Pérdida de entrenamiento: 0.6836, Precisión de entrenamiento: 0.4625
+Pérdida de validación: 0.6047, Precisión de validación: 0.7000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.39s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.68s/it]
+Época [22/4000]
+Pérdida de entrenamiento: 0.6660, Precisión de entrenamiento: 0.5000
+Pérdida de validación: 0.7715, Precisión de validación: 0.4000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.33s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.85s/it]
+Época [23/4000]
+Pérdida de entrenamiento: 0.6693, Precisión de entrenamiento: 0.4500
+Pérdida de validación: 0.6589, Precisión de validación: 0.5000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.00s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.24s/it]
+Época [24/4000]
+Pérdida de entrenamiento: 0.6716, Precisión de entrenamiento: 0.5125
+Pérdida de validación: 0.6844, Precisión de validación: 0.4500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.47s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.34s/it]
+Época [25/4000]
+Pérdida de entrenamiento: 0.6455, Precisión de entrenamiento: 0.5500
+Pérdida de validación: 0.7154, Precisión de validación: 0.4500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.97s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.06s/it]
+Época [26/4000]
+Pérdida de entrenamiento: 0.6920, Precisión de entrenamiento: 0.4125
+Pérdida de validación: 0.7634, Precisión de validación: 0.3500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.57s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.68s/it]
+Época [27/4000]
+Pérdida de entrenamiento: 0.6829, Precisión de entrenamiento: 0.4875
+Pérdida de validación: 0.7166, Precisión de validación: 0.3000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:54<00:00, 54.99s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.99s/it]
+Época [28/4000]
+Pérdida de entrenamiento: 0.6538, Precisión de entrenamiento: 0.5500
+Pérdida de validación: 0.7312, Precisión de validación: 0.4000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.10s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.04s/it]
+Época [29/4000]
+Pérdida de entrenamiento: 0.6559, Precisión de entrenamiento: 0.5750
+Pérdida de validación: 0.7748, Precisión de validación: 0.3000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.35s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.66s/it]
+Época [30/4000]
+Pérdida de entrenamiento: 0.6577, Precisión de entrenamiento: 0.4875
+Pérdida de validación: 0.7037, Precisión de validación: 0.4000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.19s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.71s/it]
+Época [31/4000]
+Pérdida de entrenamiento: 0.6723, Precisión de entrenamiento: 0.4875
+Pérdida de validación: 0.7268, Precisión de validación: 0.4000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.23s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.04s/it]
+Época [32/4000]
+Pérdida de entrenamiento: 0.6252, Precisión de entrenamiento: 0.6125
+Pérdida de validación: 0.5653, Precisión de validación: 0.6500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.49s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.92s/it]
+Época [33/4000]
+Pérdida de entrenamiento: 0.6575, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.6623, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:54<00:00, 54.16s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.83s/it]
+Época [34/4000]
+Pérdida de entrenamiento: 0.6589, Precisión de entrenamiento: 0.5125
+Pérdida de validación: 0.6402, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.78s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.15s/it]
+Época [35/4000]
+Pérdida de entrenamiento: 0.6516, Precisión de entrenamiento: 0.5375
+Pérdida de validación: 0.5972, Precisión de validación: 0.6500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.10s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.03s/it]
+Época [36/4000]
+Pérdida de entrenamiento: 0.6801, Precisión de entrenamiento: 0.4875
+Pérdida de validación: 0.6029, Precisión de validación: 0.8500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.08s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.18s/it]
+Época [37/4000]
+Pérdida de entrenamiento: 0.6588, Precisión de entrenamiento: 0.5625
+Pérdida de validación: 0.6851, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.21s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.89s/it]
+Época [38/4000]
+Pérdida de entrenamiento: 0.6746, Precisión de entrenamiento: 0.5625
+Pérdida de validación: 0.6158, Precisión de validación: 0.6500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.91s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.72s/it]
+Época [39/4000]
+Pérdida de entrenamiento: 0.6587, Precisión de entrenamiento: 0.5000
+Pérdida de validación: 0.5944, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.95s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.67s/it]
+Época [40/4000]
+Pérdida de entrenamiento: 0.6063, Precisión de entrenamiento: 0.5875
+Pérdida de validación: 0.6588, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.88s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.93s/it]
+Época [41/4000]
+Pérdida de entrenamiento: 0.6378, Precisión de entrenamiento: 0.6000
+Pérdida de validación: 0.7255, Precisión de validación: 0.3000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.00s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.59s/it]
+Época [42/4000]
+Pérdida de entrenamiento: 0.6552, Precisión de entrenamiento: 0.5500
+Pérdida de validación: 0.6576, Precisión de validación: 0.6500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.03s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.08s/it]
+Época [43/4000]
+Pérdida de entrenamiento: 0.6444, Precisión de entrenamiento: 0.4375
+Pérdida de validación: 0.6381, Precisión de validación: 0.6500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.60s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.06s/it]
+Época [44/4000]
+Pérdida de entrenamiento: 0.6525, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.6842, Precisión de validación: 0.8000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.93s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.71s/it]
+Época [45/4000]
+Pérdida de entrenamiento: 0.6611, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.6577, Precisión de validación: 0.7500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.19s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.66s/it]
+Época [46/4000]
+Pérdida de entrenamiento: 0.6700, Precisión de entrenamiento: 0.4750
+Pérdida de validación: 0.6545, Precisión de validación: 0.8000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.44s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.05s/it]
+Época [47/4000]
+Pérdida de entrenamiento: 0.6517, Precisión de entrenamiento: 0.5750
+Pérdida de validación: 0.6842, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.41s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.60s/it]
+Época [48/4000]
+Pérdida de entrenamiento: 0.6487, Precisión de entrenamiento: 0.6125
+Pérdida de validación: 0.6434, Precisión de validación: 0.7500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.90s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.87s/it]
+Época [49/4000]
+Pérdida de entrenamiento: 0.6510, Precisión de entrenamiento: 0.5500
+Pérdida de validación: 0.6547, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.21s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.21s/it]
+Época [50/4000]
+Pérdida de entrenamiento: 0.6470, Precisión de entrenamiento: 0.6375
+Pérdida de validación: 0.6625, Precisión de validación: 0.7000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.76s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.51s/it]
+Época [51/4000]
+Pérdida de entrenamiento: 0.6996, Precisión de entrenamiento: 0.4125
+Pérdida de validación: 0.7373, Precisión de validación: 0.4500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.87s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.03s/it]
+Época [52/4000]
+Pérdida de entrenamiento: 0.6233, Precisión de entrenamiento: 0.5625
+Pérdida de validación: 0.6576, Precisión de validación: 0.7500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.10s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.72s/it]
+Época [53/4000]
+Pérdida de entrenamiento: 0.6894, Precisión de entrenamiento: 0.6125
+Pérdida de validación: 0.7050, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:54<00:00, 54.17s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.16s/it]
+Época [54/4000]
+Pérdida de entrenamiento: 0.6628, Precisión de entrenamiento: 0.4750
+Pérdida de validación: 0.6843, Precisión de validación: 0.6500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.51s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.07s/it]
+Época [55/4000]
+Pérdida de entrenamiento: 0.6334, Precisión de entrenamiento: 0.5750
+Pérdida de validación: 0.6969, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:56<00:00, 56.39s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.04s/it]
+Época [56/4000]
+Pérdida de entrenamiento: 0.6667, Precisión de entrenamiento: 0.5750
+Pérdida de validación: 0.6776, Precisión de validación: 0.7500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:55<00:00, 55.97s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:13<00:00, 13.87s/it]
+Época [57/4000]
+Pérdida de entrenamiento: 0.6480, Precisión de entrenamiento: 0.7125
+Pérdida de validación: 0.6678, Precisión de validación: 0.6500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.21s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.60s/it]
+Época [58/4000]
+Pérdida de entrenamiento: 0.6427, Precisión de entrenamiento: 0.6000
+Pérdida de validación: 0.6917, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.59s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.59s/it]
+Época [59/4000]
+Pérdida de entrenamiento: 0.6196, Precisión de entrenamiento: 0.5875
+Pérdida de validación: 0.5987, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.89s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.49s/it]
+Época [60/4000]
+Pérdida de entrenamiento: 0.6903, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.7075, Precisión de validación: 0.4500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.77s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.51s/it]
+Época [61/4000]
+Pérdida de entrenamiento: 0.6368, Precisión de entrenamiento: 0.6125
+Pérdida de validación: 0.7217, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:58<00:00, 58.15s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.48s/it]
+Época [62/4000]
+Pérdida de entrenamiento: 0.6006, Precisión de entrenamiento: 0.7125
+Pérdida de validación: 0.5805, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.61s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.49s/it]
+Época [63/4000]
+Pérdida de entrenamiento: 0.6438, Precisión de entrenamiento: 0.5625
+Pérdida de validación: 0.6376, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.59s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.48s/it]
+Época [64/4000]
+Pérdida de entrenamiento: 0.6541, Precisión de entrenamiento: 0.5125
+Pérdida de validación: 0.6180, Precisión de validación: 0.6000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:58<00:00, 58.26s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.48s/it]
+Época [65/4000]
+Pérdida de entrenamiento: 0.6546, Precisión de entrenamiento: 0.5875
+Pérdida de validación: 0.6048, Precisión de validación: 0.5500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.63s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.70s/it]
+Época [66/4000]
+Pérdida de entrenamiento: 0.6691, Precisión de entrenamiento: 0.5250
+Pérdida de validación: 0.6774, Precisión de validación: 0.5000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:57<00:00, 57.65s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.57s/it]
+Época [67/4000]
+Pérdida de entrenamiento: 0.6337, Precisión de entrenamiento: 0.5375
+Pérdida de validación: 0.6418, Precisión de validación: 0.7000
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:58<00:00, 58.52s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.58s/it]
+Época [68/4000]
+Pérdida de entrenamiento: 0.6312, Precisión de entrenamiento: 0.6125
+Pérdida de validación: 0.6623, Precisión de validación: 0.7500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando: 100%|███████████████████████████████████████████████████████████| 1/1 [00:58<00:00, 58.34s/it]
+Validando: 100%|████████████████████████████████████████████████████████████| 1/1 [00:14<00:00, 14.68s/it]
+Época [69/4000]
+Pérdida de entrenamiento: 0.7003, Precisión de entrenamiento: 0.4750
+Pérdida de validación: 0.6681, Precisión de validación: 0.7500
+Checkpoint guardado: checkpoints/last_checkpoint.pth
+Entrenando:   0%|                                                                   | 0/1 [00:00<?, ?it/s]
