@@ -25,3 +25,4 @@ config: {}
 2024-09-16 00:45:31,388 INFO    MainThread:114707 [wandb_init.py:init():893] run started, returning control to user process
 2024-09-16 00:45:31,388 INFO    MainThread:114707 [wandb_run.py:_config_callback():1393] config_cb None None {'epochs': 4000, 'learning_rate': 0.0001, 'batch_size': 512, 'samples_per_epoch': 100}
 2024-09-16 01:02:52,144 INFO    MainThread:114707 [wandb_watch.py:watch():51] Watching
+2024-09-16 01:14:31,893 WARNING MsgRouterThr:114707 [router.py:message_loop():77] message_loop has been closed

@@ -109,11 +109,11 @@ def main():
     wandb.init(project="indios")
 
     # Parameters
-    epochs = 4000
+    epochs = 5000
     learning_rate = 0.0001
     batch_size = 2048
     num_workers = 16
-    samples_per_epoch = 100
+    samples_per_epoch = 64
     checkpoint_dir = "checkpoints"
     
     wandb.config.update({
@@ -155,13 +155,12 @@ def main():
     model = model.to(device)
 
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate)
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
     scaler = GradScaler()
     start_epoch = 3
     
     wandb.watch(model)
 
-    # Phase 1: Training only final layer
     print("Phase 1: Training only final layer")
     for epoch in range(start_epoch):
         train_subset_loader = DataLoader(
@@ -192,7 +191,7 @@ def main():
             "learning_rate": optimizer.param_groups[0]['lr']
         })
 
-    # Phase 2: Fine-tune all layers
+    print("Phase 2:  Fine-tune all layers")
     for param in model.parameters():
         param.requires_grad_True
     

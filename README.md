@@ -8,7 +8,7 @@
 			- Replace the final classification layer to match your number of classes.
 			- Freeze all layers except the final layer and train it with a relatively high learning rate (e.g., 0.01).
 			- Unfreeze all layers and fine-tune the entire network with a lower learning rate (e.g., 0.001 or 0.0001).
-    landsat pretrained? maybe stupid resolution of images too different...
+    landsat pretrained? maybe stupid resolution of images too different... ( SSL4EO-L dataset are 264 × 264)
         https://github.com/allenai/satlaspretrain_models?tab=readme-ov-file
         https://www.arcgis.com/home/item.html?id=e732ee81a9c14c238a14df554a8e3225
         https://torchgeo.readthedocs.io/en/stable/api/models.html#landsat  
