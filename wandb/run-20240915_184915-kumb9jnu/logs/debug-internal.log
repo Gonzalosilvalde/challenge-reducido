@@ -1,0 +1,18 @@
+{"time":"2024-09-15T18:49:15.638078399+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-15T18:49:15.638087289+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240915_184915-kumb9jnu/logs/debug-core.log"}
+{"time":"2024-09-15T18:49:15.638115639+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-15T18:49:15.638117929+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240915_184915-kumb9jnu/logs/debug-core.log"}
+{"time":"2024-09-15T18:49:15.640314466+02:00","level":"INFO","msg":"created new stream","id":"kumb9jnu"}
+{"time":"2024-09-15T18:49:15.640325216+02:00","level":"INFO","msg":"stream: started","id":"kumb9jnu"}
+{"time":"2024-09-15T18:49:15.640339386+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"kumb9jnu"}}
+{"time":"2024-09-15T18:49:15.640333146+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"kumb9jnu"}}
+{"time":"2024-09-15T18:49:15.640338416+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"kumb9jnu"}}
+{"time":"2024-09-15T18:49:16.00471365+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-09-15T18:49:16.005808364+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-09-15T19:02:49.514924654+02:00","level":"INFO","msg":"stream: closing","id":"kumb9jnu"}
+{"time":"2024-09-15T19:02:49.514947004+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-09-15T19:02:49.515087645+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-09-15T19:02:51.964003799+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"kumb9jnu"}}
+{"time":"2024-09-15T19:02:51.964039589+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"kumb9jnu"}}
+{"time":"2024-09-15T19:02:51.964037549+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"kumb9jnu"}}
+{"time":"2024-09-15T19:02:51.9641224+02:00","level":"INFO","msg":"stream: closed","id":"kumb9jnu"}

@@ -1,0 +1,11 @@
+{"time":"2024-09-16T00:45:31.015156496+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-16T00:45:31.015167616+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240916_004531-yc92xica/logs/debug-core.log"}
+{"time":"2024-09-16T00:45:31.015194636+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-16T00:45:31.015196646+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240916_004531-yc92xica/logs/debug-core.log"}
+{"time":"2024-09-16T00:45:31.016935922+02:00","level":"INFO","msg":"created new stream","id":"yc92xica"}
+{"time":"2024-09-16T00:45:31.016945382+02:00","level":"INFO","msg":"stream: started","id":"yc92xica"}
+{"time":"2024-09-16T00:45:31.016955622+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"yc92xica"}}
+{"time":"2024-09-16T00:45:31.016963112+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"yc92xica"}}
+{"time":"2024-09-16T00:45:31.016963202+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"yc92xica"}}
+{"time":"2024-09-16T00:45:31.325650247+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-09-16T00:45:31.32659554+02:00","level":"INFO","msg":"Starting system monitor"}

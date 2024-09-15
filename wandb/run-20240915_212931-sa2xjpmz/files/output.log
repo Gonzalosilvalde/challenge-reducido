@@ -1,0 +1,16 @@
+Train loader batch shapes:
+Batch input shape: torch.Size([512, 6, 16, 16])
+Batch labels shape: torch.Size([512])
+Test loader batch shapes:
+Batch shape: torch.Size([512, 6, 16, 16])
+/home/mateo/projects/ai/indiofinder/train.py:177: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+Traceback (most recent call last):
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 278, in <module>
+    main()
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 199, in main
+    model.loss.requires_grad = True
+    ^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1729, in __getattr__
+    raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+AttributeError: 'ResNet' object has no attribute 'loss'

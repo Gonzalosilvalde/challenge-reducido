@@ -1,4 +1,5 @@
 [dataset](https://drive.google.com/drive/folders/10KqkaOAGKKdYK6qrFce3chwW7sIeyDWS)
+	we are loading all every time, not really efficient
 	[Zindi](https://zindi.africa/competitions/inegi-gcim-human-settlement-detection-challenge)
 		16x16 pixel patch extracted from a Landsat image. Each pixel patch has 6 spectral bands: Blue, Green, Red, Near-infrared (NIR), Shortwave infrared (SWIR1) Shortwave infrared 2 (SWIR2)
 		30 meters per pixel. Each 16x16 patch likely represents a 480m x 480m area 
@@ -7,11 +8,11 @@
 			- Replace the final classification layer to match your number of classes.
 			- Freeze all layers except the final layer and train it with a relatively high learning rate (e.g., 0.01).
 			- Unfreeze all layers and fine-tune the entire network with a lower learning rate (e.g., 0.001 or 0.0001).
-    landsat pretrained
+    landsat pretrained? maybe stupid resolution of images too different...
         https://github.com/allenai/satlaspretrain_models?tab=readme-ov-file
         https://www.arcgis.com/home/item.html?id=e732ee81a9c14c238a14df554a8e3225
         https://torchgeo.readthedocs.io/en/stable/api/models.html#landsat  
-            ResNet50_Weights.LANDSAT_ETM_SR_MOCO looks good
+            ResNet50_Weights.LANDSAT_ETM_SR_MOCO looks decent
 	upscale sat images?
 	[satellite-image-deep-learning · GitHub](https://github.com/satellite-image-deep-learning)
 	dataset augmentation?
@@ -24,3 +25,4 @@
 		weighted cross entropy
 	ENSEMBLE
 	[Land use land cover image classification using deep learning | EuroSat | ResNet50 | GeoDev - YouTube](https://youtu.be/5BNHcLDeirs?t=691)
+	refractor to pytorch lignhtning?

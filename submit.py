@@ -29,7 +29,7 @@ def predict(model, test_loader, device):
                 outputs = model(inputs)
                 probs = torch.sigmoid(outputs.squeeze(1))
             
-            preds = (probs > 0.5).float()
+            preds = probs.float()
             
             predictions.extend(preds.cpu().numpy())
     
@@ -62,7 +62,7 @@ def main():
     
     model_path = "last_checkpoint.pth"  # Adjust this path as needed
     test_file = "data/test_data.h5"
-    batch_size = 256  # Adjust as needed
+    batch_size = 2048  # Adjust as needed
     id_map_file = 'id_map.csv'
     sample_submission_file = 'SampleSubmission.csv'
     output_file = 'submission.csv'

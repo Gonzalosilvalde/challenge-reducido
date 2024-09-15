@@ -1,0 +1,18 @@
+{"time":"2024-09-15T20:20:42.732905022+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-15T20:20:42.732915172+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240915_202042-j2tlppcn/logs/debug-core.log"}
+{"time":"2024-09-15T20:20:42.732950462+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-15T20:20:42.732953362+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240915_202042-j2tlppcn/logs/debug-core.log"}
+{"time":"2024-09-15T20:20:42.734794099+02:00","level":"INFO","msg":"created new stream","id":"j2tlppcn"}
+{"time":"2024-09-15T20:20:42.734805549+02:00","level":"INFO","msg":"stream: started","id":"j2tlppcn"}
+{"time":"2024-09-15T20:20:42.734822729+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"j2tlppcn"}}
+{"time":"2024-09-15T20:20:42.734819029+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"j2tlppcn"}}
+{"time":"2024-09-15T20:20:42.734818129+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"j2tlppcn"}}
+{"time":"2024-09-15T20:20:43.083429519+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-09-15T20:20:43.084201302+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-09-15T20:35:11.419147063+02:00","level":"INFO","msg":"stream: closing","id":"j2tlppcn"}
+{"time":"2024-09-15T20:35:11.419167313+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-09-15T20:35:11.419296303+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-09-15T20:35:12.350817778+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"j2tlppcn"}}
+{"time":"2024-09-15T20:35:12.350860258+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"j2tlppcn"}}
+{"time":"2024-09-15T20:35:12.350882668+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"j2tlppcn"}}
+{"time":"2024-09-15T20:35:12.350955039+02:00","level":"INFO","msg":"stream: closed","id":"j2tlppcn"}

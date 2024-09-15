@@ -1,0 +1,44 @@
+Train loader batch shapes:
+Batch input shape: torch.Size([512, 16, 16, 6])
+Batch labels shape: torch.Size([512])
+Test loader batch shapes:
+Batch shape: torch.Size([512, 16, 16, 6])
+/home/mateo/projects/ai/indiofinder/train.py:177: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+Phase 1: Training only final layer
+Entrenando:   0%|                                                                                                                                                               | 0/313 [00:00<?, ?it/s]/home/mateo/projects/ai/indiofinder/train.py:32: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+Entrenando:   0%|                                                                                                                                                               | 0/313 [06:16<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 277, in <module>
+    main()
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 202, in main
+    train_model(model, train_loader, criterion, optimizer,device,scaler)
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 33, in train_model
+    outputs = model(inputs)
+              ^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/timm/models/resnet.py", line 541, in forward
+    x = self.forward_features(x)
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/timm/models/resnet.py", line 520, in forward_features
+    x = self.conv1(x)
+        ^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/nn/modules/conv.py", line 458, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/nn/modules/conv.py", line 454, in _conv_forward
+    return F.conv2d(input, weight, bias, self.stride,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Given groups=1, weight of size [64, 6, 3, 3], expected input[512, 16, 16, 6] to have 6 channels, but got 16 channels instead

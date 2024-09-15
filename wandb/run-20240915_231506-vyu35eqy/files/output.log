@@ -1,0 +1,26 @@
+Train loader batch shapes:
+Batch input shape: torch.Size([512, 6, 16, 16])
+Batch labels shape: torch.Size([512])
+Test loader batch shapes:
+Batch shape: torch.Size([512, 6, 16, 16])
+/home/mateo/projects/ai/indiofinder/train.py:180: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+Phase 1: Training only final layer
+Entrenando:   0%|                                                                                                                                                               | 0/313 [00:00<?, ?it/s]/home/mateo/projects/ai/indiofinder/train.py:32: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+Entrenando:   0%|                                                                                                                                                               | 0/313 [06:34<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 283, in <module>
+    main()
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 208, in main
+    train_model(model, train_loader, criterion, optimizer,device,scaler)
+  File "/home/mateo/projects/ai/indiofinder/train.py", line 36, in train_model
+    scaler.scale(loss).backward()
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/_tensor.py", line 521, in backward
+    torch.autograd.backward(
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/autograd/__init__.py", line 289, in backward
+    _engine_run_backward(
+  File "/home/mateo/projects/ai/indiofinder/env/lib/python3.12/site-packages/torch/autograd/graph.py", line 769, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: element 0 of tensors does not require grad and does not have a grad_fn

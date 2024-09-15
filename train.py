@@ -2,16 +2,16 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Subset, random_split, DataLoader
-from dataloader import DataLoaderPyTorch
-from net import Net 
 from torch.cuda.amp import GradScaler, autocast
 from tqdm import tqdm
 import random
 import os
-import matplotlib.pyplot as plt
 import wandb
+import timm
+from torchgeo.models import ResNet18_Weights
 
-
+from dataloader import DataLoaderPyTorch
+from net import Net
 
 torch.backends.cudnn.benchmark = True
 
@@ -21,7 +21,7 @@ def train_model(model, train_loader, criterion, optimizer, device, scaler):
     correct = 0
     total = 0
     
-    for inputs, labels in tqdm(train_loader, desc="Entrenando"):
+    for inputs, labels in tqdm(train_loader, desc="Training"):
         inputs, labels = inputs.to(device), labels.to(device)
         
         optimizer.zero_grad()
@@ -48,17 +48,7 @@ def validate_model(model, val_loader, criterion, device):
     total = 0
     
     with torch.no_grad():
-        for batch in tqdm(val_loader, desc="Validando"):
-            if isinstance(batch, (tuple, list)):
-                if len(batch) == 2:
-                    inputs, labels = batch
-                else:
-                    print(f"Advertencia: El lote tiene {len(batch)} elementos. Se esperaban 2.")
-                    inputs, labels = batch[:2]  # Tomar solo los dos primeros elementos
-            else:
-                print(f"Advertencia: El lote no es una tupla o lista. Tipo: {type(batch)}")
-                continue  # Saltar este lote
-
+        for inputs, labels in tqdm(val_loader, desc="Validating"):
             inputs, labels = inputs.to(device), labels.to(device)
             
             with autocast():
@@ -82,7 +72,7 @@ def save_checkpoint(epoch, model, optimizer, scaler, loss, accuracy, filename):
         'accuracy': accuracy
     }
     torch.save(checkpoint, filename)
-    print(f"Checkpoint guardado: {filename}")
+    print(f"Checkpoint saved: {filename}")
 
 def load_checkpoint(filename, model, optimizer, scaler):
     if os.path.isfile(filename):
@@ -93,26 +83,39 @@ def load_checkpoint(filename, model, optimizer, scaler):
         start_epoch = checkpoint['epoch'] + 1
         loss = checkpoint['loss']
         accuracy = checkpoint['accuracy']
-        print(f"Checkpoint cargado: {filename}")
-        print(f"Reanudando desde la época {start_epoch}")
+        print(f"Checkpoint loaded: {filename}")
+        print(f"Resuming from epoch {start_epoch}")
         return start_epoch, loss, accuracy
     else:
-        print(f"No se encontró el checkpoint: {filename}")
-        return 0, 0, 0
+        print(f"No checkpoint found at: {filename}")
+        return 0, float('inf'), 0
+
+def modify_resnet18(model, num_input_channels=6):
+    model.conv1 = nn.Conv2d(num_input_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
+    model.maxpool = nn.Identity()
+    model.fc = nn.Linear(model.fc.in_features, 1)
+
+    nn.init.kaiming_normal_(model.conv1.weight, mode='fan_out', nonlinearity='relu')
+
+    for param in model.parameters():
+        param.requires_grad_(False)
+
+    model.conv1.requires_grad_(True)
+    model.fc.requires_grad_(True)
+    
+    return model
 
 def main():
-
     wandb.init(project="indios")
 
-    # Parámetros
+    # Parameters
     epochs = 4000
-    learning_rate = 0.001
-    batch_size = 128
-    num_workers = 4
-    samples_per_epoch = 20  # Número de muestras a usar por época
+    learning_rate = 0.0001
+    batch_size = 2048
+    num_workers = 16
+    samples_per_epoch = 100
     checkpoint_dir = "checkpoints"
     
-    # Log hyperparameters
     wandb.config.update({
         "epochs": epochs,
         "learning_rate": learning_rate,
@@ -120,104 +123,121 @@ def main():
         "samples_per_epoch": samples_per_epoch
     })
 
-    # Crear directorio para checkpoints si no existe
     os.makedirs(checkpoint_dir, exist_ok=True)
     
-    # Preparar los datos
+    # Prepare data
     train_file = "data/train_data.h5"
     test_file = "data/test_data.h5"
     
-    data_loader = DataLoaderPyTorch(train_file, test_file, batch_size=batch_size, num_workers=num_workers)
+    data_loader = DataLoaderPyTorch(
+        train_file, 
+        None, 
+        batch_size=batch_size, 
+        num_workers=num_workers,
+        train_subset=1.0,
+        test_subset=1.0
+    )
     full_train_loader = data_loader.get_train_loader()
     
-    # Dividir el conjunto de entrenamiento en entrenamiento y validación
     full_dataset = full_train_loader.dataset
     train_size = int(0.8 * len(full_dataset))
     val_size = len(full_dataset) - train_size
     train_dataset, val_dataset = random_split(full_dataset, [train_size, val_size])
     
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Usar el nuevo modelo GradientBoostedCNNRF
-    #model = MetaModel().to(device)    #model = MetaModel().to(device)
-    model = Net().to(device)
+    # model = Net()
+    weights = ResNet18_Weights.LANDSAT_ETM_SR_MOCO
+    model = timm.create_model("resnet18", in_chans=weights.meta["in_chans"], num_classes=10)
+    model.load_state_dict(weights.get_state_dict(progress=True), strict=False)
 
-    wandb.watch(model)  # Watch the model to log gradients and model parameters
+    model = modify_resnet18(model, num_input_channels=6)
+    model = model.to(device)
 
-    print(f"Información del modelo: {model}")
-    
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate)
     scaler = GradScaler()
+    start_epoch = 3
     
-    # Intentar cargar el último checkpoint
-    last_checkpoint = os.path.join(checkpoint_dir, "last_checkpoint.pth")
-    start_epoch, best_loss, best_accuracy = load_checkpoint(last_checkpoint, model, optimizer, scaler)
-    """# Función para guardar los 6 canales de la imagen en 6 imágenes separadas
-    def guardar_canales(imagen, nombre_base):
-        for i in range(6):
-            canal = imagen[i].cpu().numpy()
-            plt.imsave(f"{nombre_base}_canal_{i}.png", canal, cmap='gray')
+    wandb.watch(model)
 
-    # Guardar los canales de una imagen de muestra
-    muestra_batch, _ = next(iter(train_loader))
-    muestra_imagen = muestra_batch[0]  # Tomamos la primera imagen del lote
-    guardar_canales(muestra_imagen, "muestra")"""
-
-    print("Se han guardado los 6 canales de una imagen de muestra.")
-    for epoch in range(start_epoch, epochs):
-        # Crear un nuevo subconjunto aleatorio para cada época
-        train_subset_indices = random.sample(range(len(train_dataset)), samples_per_epoch*4)
-        train_subset = Subset(train_dataset, train_subset_indices)
+    # Phase 1: Training only final layer
+    print("Phase 1: Training only final layer")
+    for epoch in range(start_epoch):
         train_subset_loader = DataLoader(
-            train_subset, 
+            Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
             batch_size=batch_size, 
             shuffle=True, 
             num_workers=num_workers, 
             pin_memory=True
         )
-        
-        # Crear un nuevo subconjunto aleatorio para validación, similar al de entrenamiento
-        val_subset_indices = random.sample(range(len(val_dataset)), samples_per_epoch)
-        val_subset = Subset(val_dataset, val_subset_indices)
         val_subset_loader = DataLoader(
-            val_subset, 
+            Subset(val_dataset, random.sample(range(len(val_dataset)), samples_per_epoch)),
             batch_size=batch_size, 
-            shuffle=False,  # No es necesario mezclar el conjunto de validación
+            shuffle=False, 
+            num_workers=num_workers, 
+            pin_memory=True
+        )
+        
+        train_loss, train_accuracy = train_model(model, train_subset_loader, criterion, optimizer, device, scaler) 
+        val_loss, val_accuracy = validate_model(model, val_subset_loader, criterion, device)
+       
+        wandb.log({
+            "epoch": epoch + 1,
+            "phase": 1,
+            "train_loss": train_loss,
+            "train_accuracy": train_accuracy,
+            "val_loss": val_loss,
+            "val_accuracy": val_accuracy,
+            "learning_rate": optimizer.param_groups[0]['lr']
+        })
+
+    # Phase 2: Fine-tune all layers
+    for param in model.parameters():
+        param.requires_grad_True
+    
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+    best_loss = float('inf')
+    for epoch in range(start_epoch, epochs):
+        train_subset_loader = DataLoader(
+            Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
+            batch_size=batch_size, 
+            shuffle=True, 
+            num_workers=num_workers, 
+            pin_memory=True
+        )
+        val_subset_loader = DataLoader(
+            Subset(val_dataset, random.sample(range(len(val_dataset)), samples_per_epoch)),
+            batch_size=batch_size, 
+            shuffle=False, 
             num_workers=num_workers, 
             pin_memory=True
         )
         
         train_loss, train_accuracy = train_model(model, train_subset_loader, criterion, optimizer, device, scaler)
-        
-        
         val_loss, val_accuracy = validate_model(model, val_subset_loader, criterion, device)
         
-        print(f'Época [{epoch+1}/{epochs}]')
-        print(f'Pérdida de entrenamiento: {train_loss:.4f}, Precisión de entrenamiento: {train_accuracy:.4f}')
-        print(f'Pérdida de validación: {val_loss:.4f}, Precisión de validación: {val_accuracy:.4f}')
+        print(f'Epoch [{epoch+1}/{epochs}]')
+        print(f'Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
+        print(f'Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}')
         
-        # Guardar checkpoint después de cada época
-        #save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, f"checkpoint_epoch_{epoch+1}.pth"))
+        save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, "last_checkpoint.pth")
+        
         wandb.log({
             "epoch": epoch + 1,
+            "phase": 2,
             "train_loss": train_loss,
             "train_accuracy": train_accuracy,
             "val_loss": val_loss,
-            "val_accuracy": val_accuracy
+            "val_accuracy": val_accuracy,
+            "learning_rate": optimizer.param_groups[0]['lr']
         })
         
-        # Guardar el último checkpoint (sobrescribir)
-        save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, last_checkpoint)
-        
-        # Opcionalmente, guardar el mejor modelo basado en la pérdida de validación
         if val_loss < best_loss:
             best_loss = val_loss
             save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "best_model.pth"))
-    # Finish the wandb run
+
     wandb.finish()
 
 if __name__ == "__main__":

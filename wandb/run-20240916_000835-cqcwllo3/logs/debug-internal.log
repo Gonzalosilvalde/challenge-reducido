@@ -1,0 +1,18 @@
+{"time":"2024-09-16T00:08:35.560489617+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-16T00:08:35.560508507+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240916_000835-cqcwllo3/logs/debug-core.log"}
+{"time":"2024-09-16T00:08:35.5613016+02:00","level":"INFO","msg":"using version","core version":"0.18.0"}
+{"time":"2024-09-16T00:08:35.56130747+02:00","level":"INFO","msg":"created symlink","path":"/home/mateo/projects/ai/indiofinder/wandb/run-20240916_000835-cqcwllo3/logs/debug-core.log"}
+{"time":"2024-09-16T00:08:35.563975598+02:00","level":"INFO","msg":"created new stream","id":"cqcwllo3"}
+{"time":"2024-09-16T00:08:35.563991418+02:00","level":"INFO","msg":"stream: started","id":"cqcwllo3"}
+{"time":"2024-09-16T00:08:35.563995938+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"cqcwllo3"}}
+{"time":"2024-09-16T00:08:35.564005928+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"cqcwllo3"}}
+{"time":"2024-09-16T00:08:35.564021809+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"cqcwllo3"}}
+{"time":"2024-09-16T00:08:38.351037531+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-09-16T00:08:38.351977864+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-09-16T00:23:24.823715772+02:00","level":"INFO","msg":"stream: closing","id":"cqcwllo3"}
+{"time":"2024-09-16T00:23:24.823741022+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-09-16T00:23:24.823964362+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-09-16T00:23:25.749917157+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"cqcwllo3"}}
+{"time":"2024-09-16T00:23:25.749954457+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"cqcwllo3"}}
+{"time":"2024-09-16T00:23:25.750034458+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"cqcwllo3"}}
+{"time":"2024-09-16T00:23:25.750076348+02:00","level":"INFO","msg":"stream: closed","id":"cqcwllo3"}
