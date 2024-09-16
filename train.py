@@ -193,7 +193,7 @@ def main():
 
     print("Phase 2:  Fine-tune all layers")
     for param in model.parameters():
-        param.requires_grad_True
+        param.requires_grad_(True)
     
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -220,8 +220,7 @@ def main():
         print(f'Epoch [{epoch+1}/{epochs}]')
         print(f'Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
         print(f'Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}')
-        
-        save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, "last_checkpoint.pth")
+        save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "last_checkpoint.pth"))
         
         wandb.log({
             "epoch": epoch + 1,

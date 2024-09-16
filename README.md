@@ -22,7 +22,9 @@
 		[ibm-nasa-geospatial/Prithvi-100M · Hugging Face](https://huggingface.co/ibm-nasa-geospatial/Prithvi-100M)
 		[GitHub - nasaharvest/presto: Lightweight, Pre-trained Transformers for Remote Sensing Timeseries](https://github.com/nasaharvest/presto)
 	Class Imbalance: If settlements are rare in your dataset, consider using weighted loss or oversampling techniques.
-		weighted cross entropy
+		!!!! Number of 0s: 1000000 (90.91%), Number of 1s: 100000 (9.09%)
+		weighted cross entropy ?
 	ENSEMBLE
 	[Land use land cover image classification using deep learning | EuroSat | ResNet50 | GeoDev - YouTube](https://youtu.be/5BNHcLDeirs?t=691)
 	refractor to pytorch lignhtning?
+	train on validation!

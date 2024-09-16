@@ -6,11 +6,17 @@ from net import Net  # Assuming your model class is in a file named net.py
 from torch.utils.data import DataLoader
 from dataloader import DataLoaderPyTorch  # Assuming you have this custom dataloader
 from tqdm import tqdm
+import timm
+import train
 
 def load_model(model_path, device):
     print(f"Loading model from {model_path}")
-    model = Net().to(device)
+    #model = Net().to(device)
+    #checkpoint = torch.load(model_path, map_location=device)
+    model = timm.create_model("resnet18", num_classes=10)
     checkpoint = torch.load(model_path, map_location=device)
+    model = train.modify_resnet18(model, num_input_channels=6)
+    model = model.to(device)
     model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
     print("Model loaded successfully")
@@ -60,7 +66,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     
-    model_path = "last_checkpoint.pth"  # Adjust this path as needed
+    model_path = "checkpoints/best_model2.pth"  # Adjust this path as needed
     test_file = "data/test_data.h5"
     batch_size = 2048  # Adjust as needed
     id_map_file = 'id_map.csv'
@@ -72,7 +78,7 @@ def main():
     
     # Create test dataloader
     print("Creating test dataloader")
-    data_loader = DataLoaderPyTorch(train_file="data/train_data.h5", test_file=test_file, batch_size=batch_size)
+    data_loader = DataLoaderPyTorch(None, test_file=test_file, batch_size=batch_size, train_subset=0.0, test_subset=1.0)
     test_loader = data_loader.get_test_loader()
     test_dataset = test_loader.dataset
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)

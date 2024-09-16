@@ -56,8 +56,9 @@ class DataLoaderPyTorch:
         self._prepare_data()
 
     def _prepare_data(self):
-        train_dataset = H5Dataset(self.train_file, balance_data=self.balance_data, subset_fraction=self.train_subset)
-        self.train_loader = self._create_dataloader(train_dataset, shuffle=True)
+        if self.train_file:
+            train_dataset = H5Dataset(self.train_file, balance_data=self.balance_data, subset_fraction=self.train_subset)
+            self.train_loader = self._create_dataloader(train_dataset, shuffle=True)
 
         if self.test_file:
             test_dataset = H5Dataset(self.test_file, balance_data=False, subset_fraction=self.test_subset)
