@@ -68,6 +68,32 @@ class H5Dataset(Dataset):
             else: 
                 return X
 
+import h5py
+import torch
+from torch.utils.data import Dataset
+
+class TestH5Dataset(Dataset):
+    def __init__(self, h5_file):
+        self.h5_file = h5_file
+        with h5py.File(h5_file, 'r') as hdf:
+            self.num_samples = len(hdf['images'])
+
+    def __len__(self):
+        return self.num_samples
+
+    def __getitem__(self, idx):
+        with h5py.File(self.h5_file, 'r', libver='latest', swmr=True) as hdf:
+            X = torch.tensor(hdf['images'][idx], dtype=torch.float32).permute(2, 0, 1)
+            id = self.get_id(idx)
+            return X, id
+
+    def get_id(self, idx):
+        with h5py.File(self.h5_file, 'r', libver='latest', swmr=True) as hdf:
+            if 'ids' in hdf:
+                return hdf['ids'][idx]
+            else:
+                return idx  
+
 class DataLoaderPyTorch:
     def __init__(self, train_file, test_file=None, batch_size=256, balance_data=True, num_workers=4, train_subset=1.0, test_subset=1.0, augment_train=True):
         self.train_file = train_file

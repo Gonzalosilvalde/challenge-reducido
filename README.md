@@ -2,7 +2,7 @@
   - 16x16 pixel patch extracted from a Landsat image. Each pixel patch has 6 spectral bands: Blue, Green, Red, Near-infrared (NIR), Shortwave infrared (SWIR1) Shortwave infrared 2 (SWIR2)
   - 30 meters per pixel. Each 16x16 patch likely represents a 480m x 480m area 
   - [dataset](https://drive.google.com/drive/folders/10KqkaOAGKKdYK6qrFce3chwW7sIeyDWS)
-	- Not loading efficiently, can be improved
+	- Not loading efficiently, can be improved, refractor dataloader
 
 - [satellite-image-deep-learning index · GitHub](https://github.com/satellite-image-deep-learning)
 

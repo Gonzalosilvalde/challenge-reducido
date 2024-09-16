@@ -1,18 +1,21 @@
 import torch
 import h5py
+import json
 import pandas as pd
 from torch.amp import autocast
 from torch.utils.data import DataLoader
+import dataloader
 from tqdm import tqdm
 import timm
 import train
-from torch.cuda.amp import GradScaler
+import torch.cuda.amp
+import submit_loader
 
 def load_model(model_path, device):
     print(f"Loading model from {model_path}")
-    model = timm.create_model("resnet18", num_classes=10)
-    checkpoint = torch.load(model_path, map_location=device)
+    model = timm.create_model("resnet18",in_chans=6, num_classes=10)
     model = train.modify_resnet18(model, num_input_channels=6)
+    checkpoint = torch.load(model_path, map_location=device, weights_only=True)
     model = model.to(device)
     model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
@@ -23,33 +26,47 @@ def load_model(model_path, device):
 def predict(model, test_loader, device):
     print("Starting prediction process")
     predictions = []
-    scaler = GradScaler()
+    ids = []
     
-    for inputs in tqdm(test_loader, desc="Predicting", unit="batch"):
+    for inputs, batch_ids in tqdm(test_loader, desc="Predicting", unit="batch"):
         inputs = inputs.to(device, non_blocking=True)
         
-        with autocast(device_type='cuda', dtype=torch.float16):
+        with torch.amp.autocast(device_type='cuda'):
             outputs = model(inputs)
-            probs = torch.sigmoid(outputs.squeeze(1))
+            probs = (torch.sigmoid(outputs.squeeze(1))).float() #> 0.5).float()
         
-        predictions.extend(probs.float().cpu().numpy())
+        predictions.extend(probs.cpu().numpy().tolist())  # Convert to Python list
+        ids.extend(batch_ids.cpu().numpy().tolist())  # Convert to Python list
     
     print(f"Prediction complete. Total predictions: {len(predictions)}")
-    return predictions
+    return predictions, ids
 
-def create_submission_file(predictions, id_map_file, sample_submission_file, output_file):
-    print("Creating submission file")
-    df_id_map = pd.read_csv(id_map_file)
-    id_map = dict(zip(df_id_map['id'], df_id_map['ID']))
-    print(f"Loaded ID map with {len(id_map)} entries")
+def save_predictions_to_json(predictions, ids, output_file):
+    print(f"Saving predictions to {output_file}")
+    data = {"ids": ids, "predictions": predictions}
+    with open(output_file, 'w') as f:
+        json.dump(data, f)
+    print(f"Predictions saved to {output_file}")
+
+def save_predictions_to_csv(predictions, ids, output_file):
+    print(f"Saving predictions to {output_file}")
+    df = pd.DataFrame({'id': ids, 'class': predictions})
+    df.to_csv(output_file, index=False)
+    print(f"Predictions saved to {output_file}")
+
+def create_submission_file(predictions_file, map_file, output_file):
+    predictions = pd.read_csv(predictions_file)
+    id_map = pd.read_csv(map_file)
     
-    sub = pd.read_csv(sample_submission_file)
-    print(f"Loaded sample submission file with {len(sub)} entries")
+    # Create a dictionary for faster lookup, reversing the mapping
+    id_dict = dict(zip(id_map['ID'].astype(str), id_map['id']))
     
-    sub['class'] = [predictions[id_map[id_]] for id_ in sub['id']]
+    # Map the numeric IDs to their corresponding string IDs
+    predictions['id'] = predictions['id'].astype(str).map(id_dict)
     
-    sub.to_csv(output_file, index=False)
-    print(f"Submission file saved to {output_file}")
+    predictions.to_csv(output_file, index=False)
+    print(f"Submission file created: {output_file}")
+
 
 def main():
     print("Starting main function")
@@ -61,21 +78,23 @@ def main():
     batch_size = 4096
     id_map_file = 'id_map.csv'
     sample_submission_file = 'SampleSubmission.csv'
-    output_file = 'submission3.csv'
-    
-    model = load_model(model_path, device)
-    
-    print("Creating test dataloader")
-    from dataloader import DataLoaderPyTorch
-    data_loader = DataLoaderPyTorch(None, test_file=test_file, batch_size=batch_size, train_subset=0.0, test_subset=1.0)
-    test_loader = data_loader.get_test_loader()
-    test_dataset = test_loader.dataset
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
-    print(f"Test loader created with {len(test_dataset)} samples")
+    output_file = 'submission6.csv'
+    predictions_file = 'predictions.csv'
 
-    predictions = predict(model, test_loader, device)
+    model = load_model(model_path, device)
+    print("Creating test dataloader")
+
+    submit_data = submit_loader.SubmitTestLoader(test_file, batch_size=batch_size, subset_fraction=1.0)
+    test_loader = submit_data.get_test_loader()
     
-    create_submission_file(predictions, id_map_file, sample_submission_file, output_file)
+    #print(f"Test loader created with {len(submit_data)} samples")
+    
+    predictions, ids = predict(model, test_loader, device)
+
+    
+    #save_predictions_to_json(predictions, ids, predictions_file)
+    save_predictions_to_csv (predictions, ids, predictions_file)
+    create_submission_file(predictions_file, id_map_file, output_file)
     
     print("Script execution completed")
     print("\nTo submit your results, please visit:")

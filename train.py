@@ -35,7 +35,7 @@ def train_model(model, train_loader, criterion, optimizer, device, scaler):
         scaler.update()
         
         running_loss += loss.item() * inputs.size(0)
-        predicted = (torch.sigmoid(outputs.squeeze(1)) > 0.5).float()
+        predicted = (torch.sigmoid(outputs.squeeze(1))) #> 0.5).float()
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
     
