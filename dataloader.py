@@ -3,12 +3,15 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 from functools import lru_cache
+from torchvision import transforms
 
 class H5Dataset(Dataset):
-    def __init__(self, h5_file, balance_data=False, subset_fraction=1.0):
+    def __init__(self, h5_file, balance_data=False, subset_fraction=1.0, augment=False):
         self.h5_file = h5_file
         self.balance_data = balance_data
         self.subset_fraction = subset_fraction
+        self.augment = augment
+        self.transform = self._get_transforms() if augment else None
         
         with h5py.File(h5_file, 'r') as hdf:
             total_samples = len(hdf['images'])
@@ -27,6 +30,29 @@ class H5Dataset(Dataset):
         balanced_zero_indices = np.random.choice(zeros_indices, num_ones, replace=False)
         return np.concatenate([ones_indices, balanced_zero_indices])
 
+    def _get_transforms(self):
+        return transforms.Compose([
+            transforms.Lambda(self._custom_transform)
+        ])
+
+    def _custom_transform(self, img):
+        
+        # Dividimos los 6 canales en dos grupos de 3 canales
+        img1, img2 = img[:3], img[3:]
+
+        # Aplicamos las transformaciones a cada grupo por separado
+        transform = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomRotation(10),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+        ])
+
+        img1 = transform(img1)
+        img2 = transform(img2)
+
+        # Recombinamos los dos grupos
+        return torch.cat([img1, img2], dim=0)
+
     def __len__(self):
         return len(self.indices)
 
@@ -34,6 +60,8 @@ class H5Dataset(Dataset):
         actual_idx = self.indices[idx]
         with h5py.File(self.h5_file, 'r', libver='latest', swmr=True) as hdf:
             X = torch.tensor(hdf['images'][actual_idx], dtype=torch.float32).permute(2, 0, 1)
+            if self.augment:
+                X = self.transform(X)
             if 'labels' in hdf:
                 y = torch.tensor(hdf['labels'][actual_idx], dtype=torch.float32)
                 return X, y
@@ -41,7 +69,7 @@ class H5Dataset(Dataset):
                 return X
 
 class DataLoaderPyTorch:
-    def __init__(self, train_file, test_file=None, batch_size=256, balance_data=True, num_workers=4, train_subset=1.0, test_subset=1.0):
+    def __init__(self, train_file, test_file=None, batch_size=256, balance_data=True, num_workers=4, train_subset=1.0, test_subset=1.0, augment_train=True):
         self.train_file = train_file
         self.test_file = test_file
         self.batch_size = batch_size
@@ -49,6 +77,7 @@ class DataLoaderPyTorch:
         self.num_workers = num_workers
         self.train_subset = train_subset
         self.test_subset = test_subset
+        self.augment_train = augment_train
 
         self.train_loader = None
         self.test_loader = None
@@ -57,11 +86,11 @@ class DataLoaderPyTorch:
 
     def _prepare_data(self):
         if self.train_file:
-            train_dataset = H5Dataset(self.train_file, balance_data=self.balance_data, subset_fraction=self.train_subset)
+            train_dataset = H5Dataset(self.train_file, balance_data=self.balance_data, subset_fraction=self.train_subset, augment=self.augment_train)
             self.train_loader = self._create_dataloader(train_dataset, shuffle=True)
 
         if self.test_file:
-            test_dataset = H5Dataset(self.test_file, balance_data=False, subset_fraction=self.test_subset)
+            test_dataset = H5Dataset(self.test_file, balance_data=False, subset_fraction=self.test_subset, augment=False)
             self.test_loader = self._create_dataloader(test_dataset, shuffle=False)
 
     def _create_dataloader(self, dataset, shuffle):
@@ -98,6 +127,6 @@ class DataLoaderPyTorch:
         return self.test_loader
 
 # Example usage
-# data_loader = DataLoaderPyTorch(train_file="train_data.h5", test_file="test_data.h5", train_subset=0.8, test_subset=0.5)
+# data_loader = DataLoaderPyTorch(train_file="train_data.h5", test_file="test_data.h5", train_subset=0.8, test_subset=0.5, augment_train=True)
 # train_loader = data_loader.get_train_loader()
 # test_loader = data_loader.get_test_loader()

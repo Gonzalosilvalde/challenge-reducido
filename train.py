@@ -111,9 +111,9 @@ def main():
     # Parameters
     epochs = 5000
     learning_rate = 0.0001
-    batch_size = 2048
-    num_workers = 16
-    samples_per_epoch = 64
+    batch_size = 1
+    num_workers = 1
+    samples_per_epoch = 20
     checkpoint_dir = "checkpoints"
     
     wandb.config.update({
@@ -135,7 +135,8 @@ def main():
         batch_size=batch_size, 
         num_workers=num_workers,
         train_subset=1.0,
-        test_subset=1.0
+        test_subset=1.0,
+        augment_train=True  # Activar data augmentation para el conjunto de entrenamiento
     )
     full_train_loader = data_loader.get_train_loader()
     
