@@ -105,15 +105,30 @@ def modify_resnet18(model, num_input_channels=6):
     
     return model
 
+def fine_tune_gradually(model, num_epochs_per_stage):
+    stages = [
+        model.layer4,
+        model.layer3,
+        model.layer2,
+        model.layer1,
+        model.conv1
+    ]
+    
+    for stage in stages:
+        for param in stage.parameters():
+            param.requires_grad = True
+        
+        yield from range(num_epochs_per_stage)
+
 def main():
     wandb.init(project="indios")
 
     # Parameters
     epochs = 5000
     learning_rate = 0.0001
-    batch_size = 1
-    num_workers = 1
-    samples_per_epoch = 20
+    batch_size = 16
+    num_workers = 4
+    samples_per_epoch = 100
     checkpoint_dir = "checkpoints"
     
     wandb.config.update({
@@ -162,6 +177,9 @@ def main():
     
     wandb.watch(model)
 
+    # Inicializar best_loss
+    best_loss = float('inf')
+
     print("Phase 1: Training only final layer")
     for epoch in range(start_epoch):
         train_subset_loader = DataLoader(
@@ -193,13 +211,11 @@ def main():
         })
 
     print("Phase 2:  Fine-tune all layers")
-    for param in model.parameters():
-        param.requires_grad_(True)
-    
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    num_epochs_per_stage = 10
+    epoch_generator = fine_tune_gradually(model, num_epochs_per_stage)
 
-    best_loss = float('inf')
-    for epoch in range(start_epoch, epochs):
+    for epoch in epoch_generator:
+        # Tu código de entrenamiento actual aquí
         train_subset_loader = DataLoader(
             Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
             batch_size=batch_size, 
@@ -217,6 +233,49 @@ def main():
         
         train_loss, train_accuracy = train_model(model, train_subset_loader, criterion, optimizer, device, scaler)
         val_loss, val_accuracy = validate_model(model, val_subset_loader, criterion, device)
+        
+        print(f'Epoch [{epoch+1}/{epochs}]')
+        print(f'Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
+        print(f'Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}')
+        save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "last_checkpoint.pth"))
+        
+        wandb.log({
+            "epoch": epoch + 1,
+            "phase": 2,
+            "train_loss": train_loss,
+            "train_accuracy": train_accuracy,
+            "val_loss": val_loss,
+            "val_accuracy": val_accuracy,
+            "learning_rate": optimizer.param_groups[0]['lr']
+        })
+        
+        if val_loss < best_loss:
+            best_loss = val_loss
+            save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "best_model.pth"))
+
+    scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True)
+
+    for epoch in epoch_generator:
+        # Tu código de entrenamiento actual aquí
+        train_subset_loader = DataLoader(
+            Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
+            batch_size=batch_size, 
+            shuffle=True, 
+            num_workers=num_workers, 
+            pin_memory=True
+        )
+        val_subset_loader = DataLoader(
+            Subset(val_dataset, random.sample(range(len(val_dataset)), samples_per_epoch)),
+            batch_size=batch_size, 
+            shuffle=False, 
+            num_workers=num_workers, 
+            pin_memory=True
+        )
+        
+        train_loss, train_accuracy = train_model(model, train_subset_loader, criterion, optimizer, device, scaler)
+        val_loss, val_accuracy = validate_model(model, val_subset_loader, criterion, device)
+        
+        scheduler.step(val_loss)
         
         print(f'Epoch [{epoch+1}/{epochs}]')
         print(f'Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')

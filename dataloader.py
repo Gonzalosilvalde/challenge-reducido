@@ -36,15 +36,16 @@ class H5Dataset(Dataset):
         ])
 
     def _custom_transform(self, img):
-        
         # Dividimos los 6 canales en dos grupos de 3 canales
         img1, img2 = img[:3], img[3:]
 
         # Aplicamos las transformaciones a cada grupo por separado
         transform = transforms.Compose([
-            transforms.RandomHorizontalFlip(),
             transforms.RandomRotation(10),
-            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+            transforms.RandomVerticalFlip(),
+            transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+            # Agrega más transformaciones específicas para imágenes de satélite
         ])
 
         img1 = transform(img1)
