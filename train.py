@@ -93,10 +93,8 @@ def load_checkpoint(filename, model, optimizer, scaler):
 def modify_resnet18(model, num_input_channels=6):
     model.conv1 = nn.Conv2d(num_input_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
     model.maxpool = nn.Identity()
-    model.fc = nn.Linear(model.fc.in_features, 1)
-
-    nn.init.kaiming_normal_(model.conv1.weight, mode='fan_out', nonlinearity='relu')
-
+    #model.fc = nn.Linear(model.fc.in_features, 1)
+    #nn.init.kaiming_normal_(model.conv1.weight, mode='fan_out', nonlinearity='relu')
     for param in model.parameters():
         param.requires_grad_(False)
 
@@ -110,10 +108,10 @@ def main():
 
     # Parameters
     epochs = 5000
-    learning_rate = 0.0001
-    batch_size = 1
-    num_workers = 1
-    samples_per_epoch = 20
+    learning_rate = 0.00001
+    batch_size = 256
+    num_workers = 8
+    samples_per_epoch = 2048
     checkpoint_dir = "checkpoints"
     
     wandb.config.update({
@@ -125,21 +123,18 @@ def main():
 
     os.makedirs(checkpoint_dir, exist_ok=True)
     
-    # Prepare data
     train_file = "data/train_data.h5"
-    test_file = "data/test_data.h5"
-    
     data_loader = DataLoaderPyTorch(
-        train_file, 
-        None, 
+        train_file,
         batch_size=batch_size, 
         num_workers=num_workers,
-        train_subset=1.0,
-        test_subset=1.0,
-        augment_train=True  # Activar data augmentation para el conjunto de entrenamiento
+        subset=1.0,
+        target_ratio=0.5,
+        augment=True,
+        balance_data=True
     )
-    full_train_loader = data_loader.get_train_loader()
     
+    full_train_loader = data_loader.get_train_loader()
     full_dataset = full_train_loader.dataset
     train_size = int(0.8 * len(full_dataset))
     val_size = len(full_dataset) - train_size
@@ -149,7 +144,8 @@ def main():
     
     # model = Net()
     weights = ResNet18_Weights.LANDSAT_ETM_SR_MOCO
-    model = timm.create_model("resnet18", in_chans=weights.meta["in_chans"], num_classes=10)
+    model = timm.create_model("resnet18", in_chans=weights.meta["in_chans"], num_classes=1)
+    #print(model)
     model.load_state_dict(weights.get_state_dict(progress=True), strict=False)
 
     model = modify_resnet18(model, num_input_channels=6)
@@ -158,12 +154,11 @@ def main():
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
     scaler = GradScaler()
-    start_epoch = 3
     
     wandb.watch(model)
-
+    init_epoch=5
     print("Phase 1: Training only final layer")
-    for epoch in range(start_epoch):
+    for epoch in range(init_epoch):
         train_subset_loader = DataLoader(
             Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
             batch_size=batch_size, 
@@ -191,7 +186,10 @@ def main():
             "val_accuracy": val_accuracy,
             "learning_rate": optimizer.param_groups[0]['lr']
         })
-
+        print(f'Epoch [{epoch+1}/{init_epoch}]')
+        print(f'Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
+        print(f'Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}')
+        
     print("Phase 2:  Fine-tune all layers")
     for param in model.parameters():
         param.requires_grad_(True)
@@ -199,7 +197,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     best_loss = float('inf')
-    for epoch in range(start_epoch, epochs):
+    for epoch in range(init_epoch, epochs):
         train_subset_loader = DataLoader(
             Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
             batch_size=batch_size, 
