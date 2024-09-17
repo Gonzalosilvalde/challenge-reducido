@@ -32,26 +32,29 @@ class H5Dataset(Dataset):
 
     def _get_transforms(self):
         return transforms.Compose([
-            transforms.Lambda(self._custom_transform)
+            transforms.Lambda(self._split_channels),
+            transforms.Lambda(self._apply_transforms_to_both),
+            transforms.Lambda(self._merge_channels)
         ])
 
-    def _custom_transform(self, img):
-        
-        # Dividimos los 6 canales en dos grupos de 3 canales
-        img1, img2 = img[:3], img[3:]
+    def _split_channels(self, img):
+        return img[:3], img[3:]
 
-        # Aplicamos las transformaciones a cada grupo por separado
-        transform = transforms.Compose([
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomRotation(10),
-            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-        ])
+    def _merge_channels(self, img_tuple):
+        return torch.cat(img_tuple, dim=0)
 
-        img1 = transform(img1)
-        img2 = transform(img2)
-
-        # Recombinamos los dos grupos
-        return torch.cat([img1, img2], dim=0)
+    def _apply_transforms_to_both(self, img_tuple):
+        transforms_list = [
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomVerticalFlip(p=0.5),
+            transforms.RandomRotation(30),
+            transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),
+            transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+            transforms.GaussianBlur(kernel_size=3, sigma=(0.1, 2.0)),
+            transforms.RandomAdjustSharpness(sharpness_factor=2, p=0.5),
+        ]
+        composed_transforms = transforms.Compose(transforms_list)
+        return composed_transforms(img_tuple[0]), composed_transforms(img_tuple[1])
 
     def __len__(self):
         return len(self.indices)
@@ -60,10 +63,10 @@ class H5Dataset(Dataset):
         actual_idx = self.indices[idx]
         with h5py.File(self.h5_file, 'r', libver='latest', swmr=True) as hdf:
             X = torch.tensor(hdf['images'][actual_idx], dtype=torch.float32).permute(2, 0, 1)
-            if self.augment:
-                X = self.transform(X)
             if 'labels' in hdf:
                 y = torch.tensor(hdf['labels'][actual_idx], dtype=torch.float32)
+                if self.augment and y == 1:
+                    X = self.transform(X)
                 return X, y
             else: 
                 return X
