@@ -122,19 +122,33 @@ def main():
     })
 
     os.makedirs(checkpoint_dir, exist_ok=True)
-    
     train_file = "data/train_data.h5"
-    data_loader = DataLoaderPyTorch(
+    
+    data_loader_train = DataLoaderPyTorch(
         train_file,
         batch_size=batch_size, 
         num_workers=num_workers,
         subset=1.0,
         target_ratio=0.5,
-        augment=True,
+        augment=True,  # Solo para entrenamiento
         balance_data=True
     )
+
+    # DataLoader para validación/test sin augmentación
+    data_loader_val = DataLoaderPyTorch(
+        train_file,
+        batch_size=batch_size, 
+        num_workers=num_workers,
+        subset=1.0,
+        target_ratio=0.5,
+        augment=False,  # Sin augmentación
+        balance_data=False  # Asumo que en validación no necesitas balanceo
+    )
     
-    full_train_loader = data_loader.get_train_loader()
+    full_train_loader = data_loader_train.get_train_loader()
+    full_val_loader = data_loader_val.get_train_loader()
+
+    # Separar en train/validation
     full_dataset = full_train_loader.dataset
     train_size = int(0.8 * len(full_dataset))
     val_size = len(full_dataset) - train_size
@@ -160,7 +174,7 @@ def main():
     print("Phase 1: Training only final layer")
     for epoch in range(init_epoch):
         train_subset_loader = DataLoader(
-            Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
+            Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch * 4)),
             batch_size=batch_size, 
             shuffle=True, 
             num_workers=num_workers, 
