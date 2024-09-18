@@ -2,3 +2,5 @@ data
 env
 checkpoints
 wandb
+__pycache__
+*.pth

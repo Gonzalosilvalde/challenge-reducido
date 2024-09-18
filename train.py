@@ -121,39 +121,33 @@ def main():
         "samples_per_epoch": samples_per_epoch
     })
 
-    os.makedirs(checkpoint_dir, exist_ok=True)
     train_file = "data/train_data.h5"
+    validation_file = "data/validation_data.h5"
     
     data_loader_train = DataLoaderPyTorch(
         train_file,
         batch_size=batch_size, 
         num_workers=num_workers,
         subset=1.0,
-        target_ratio=0.5,
+        target_ratio=0.6,
         augment=True,  # Solo para entrenamiento
         balance_data=True
     )
 
     # DataLoader para validación/test sin augmentación
     data_loader_val = DataLoaderPyTorch(
-        train_file,
+        validation_file,
         batch_size=batch_size, 
         num_workers=num_workers,
         subset=1.0,
-        target_ratio=0.5,
-        augment=False,  # Sin augmentación
-        balance_data=False  # Asumo que en validación no necesitas balanceo
+        target_ratio=0.6,
+        augment=False,  
+        balance_data=True 
     )
-    
+
     full_train_loader = data_loader_train.get_train_loader()
     full_val_loader = data_loader_val.get_train_loader()
 
-    # Separar en train/validation
-    full_dataset = full_train_loader.dataset
-    train_size = int(0.8 * len(full_dataset))
-    val_size = len(full_dataset) - train_size
-    train_dataset, val_dataset = random_split(full_dataset, [train_size, val_size])
-    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # model = Net()
@@ -174,14 +168,14 @@ def main():
     print("Phase 1: Training only final layer")
     for epoch in range(init_epoch):
         train_subset_loader = DataLoader(
-            Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch * 4)),
+            Subset(full_train_loader.dataset, random.sample(range(len(full_train_loader.dataset)), samples_per_epoch * 4)),
             batch_size=batch_size, 
             shuffle=True, 
             num_workers=num_workers, 
             pin_memory=True
         )
         val_subset_loader = DataLoader(
-            Subset(val_dataset, random.sample(range(len(val_dataset)), samples_per_epoch)),
+            Subset(full_val_loader.dataset, random.sample(range(len(full_val_loader.dataset)), samples_per_epoch)),
             batch_size=batch_size, 
             shuffle=False, 
             num_workers=num_workers, 
@@ -213,14 +207,14 @@ def main():
     best_loss = float('inf')
     for epoch in range(init_epoch, epochs):
         train_subset_loader = DataLoader(
-            Subset(train_dataset, random.sample(range(len(train_dataset)), samples_per_epoch*4)),
+            Subset(full_train_loader.dataset, random.sample(range(len(full_train_loader.dataset)), samples_per_epoch*4)),
             batch_size=batch_size, 
             shuffle=True, 
             num_workers=num_workers, 
             pin_memory=True
         )
         val_subset_loader = DataLoader(
-            Subset(val_dataset, random.sample(range(len(val_dataset)), samples_per_epoch)),
+            Subset(full_val_loader.dataset, random.sample(range(len(full_val_loader.dataset)), samples_per_epoch)),
             batch_size=batch_size, 
             shuffle=False, 
             num_workers=num_workers, 

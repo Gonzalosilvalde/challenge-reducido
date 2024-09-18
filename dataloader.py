@@ -20,30 +20,29 @@ class H5Dataset(Dataset):
             total_samples = len(hdf['images'])
             self.num_samples = int(total_samples * self.subset_fraction)
             
-            # Select subset indices first and sort them
-            subset_indices = np.sort(np.random.choice(np.arange(total_samples), self.num_samples, replace=False))
+            np.random.seed(42)
             
-            labels = hdf['labels'][subset_indices]
+            subset_indices = np.random.choice(np.arange(total_samples), self.num_samples, replace=False)
             
-            positive_indices = subset_indices[labels == 1]
-            negative_indices = subset_indices[labels == 0]
+            num_positive = np.sum(hdf['labels'][subset_indices] == 1)
+            num_negative = self.num_samples - num_positive
             
-            num_positive = len(positive_indices)
-            num_negative = len(negative_indices)
+            target_samples_neg = int(self.num_samples * self.target_ratio)
+            target_samples_pos = self.num_samples - target_samples_neg
+
+            positive_indices = subset_indices[hdf['labels'][subset_indices] == 1]
+            negative_indices = subset_indices[hdf['labels'][subset_indices] == 0]
+
+            # Handle edge cases
+            if len(positive_indices) == 0 or len(negative_indices) == 0:
+                raise ValueError("Subset contains only one class. Increase subset_fraction or adjust target_ratio.")
+
+            # Balance the data
+            balanced_pos = np.random.choice(positive_indices, target_samples_pos, replace=(num_positive < target_samples_pos))
+            balanced_neg = np.random.choice(negative_indices, target_samples_neg, replace=(num_negative < target_samples_neg))
             
-            target_samples = int(self.num_samples * self.target_ratio)
-            
-            if num_positive < target_samples:
-                positive_indices = np.random.choice(positive_indices, target_samples, replace=True)
-            else:
-                positive_indices = np.random.choice(positive_indices, target_samples, replace=False)
-            
-            if num_negative < target_samples:
-                negative_indices = np.random.choice(negative_indices, target_samples, replace=True)
-            else:
-                negative_indices = np.random.choice(negative_indices, target_samples, replace=False)
-            
-            self.indices = np.sort(np.concatenate([positive_indices, negative_indices]))
+            self.indices = np.concatenate([balanced_pos, balanced_neg])
+            np.random.shuffle(self.indices) 
 
     def _get_transforms(self):
         return A.Compose([
@@ -73,7 +72,7 @@ class H5Dataset(Dataset):
 
 
 class DataLoaderPyTorch:
-    def __init__(self, train_file, batch_size=256, balance_data=True, num_workers=4,target_ratio=0.5 ,subset=1.0, augment=True):
+    def __init__(self, train_file, batch_size=256, balance_data=True, num_workers=4,target_ratio=0.6 ,subset=1.0, augment=True):
         self.train_file = train_file
         self.batch_size = batch_size
         self.balance_data = balance_data
@@ -85,7 +84,7 @@ class DataLoaderPyTorch:
         self._prepare_data()
     def _prepare_data(self):
         if self.train_file:
-            train_dataset = H5Dataset(self.train_file, target_ratio=0.5, subset_fraction=self.subset, augment=True)
+            train_dataset = H5Dataset(self.train_file, target_ratio=0.6, subset_fraction=self.subset, augment=True)
             self.train_loader = self._create_dataloader(train_dataset, shuffle=True)
     def _create_dataloader(self, dataset, shuffle):
         return DataLoader(
