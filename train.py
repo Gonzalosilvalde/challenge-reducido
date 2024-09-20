@@ -35,7 +35,7 @@ def train_model(model, train_loader, criterion, optimizer, device, scaler):
         scaler.update()
         
         running_loss += loss.item() * inputs.size(0)
-        predicted = (torch.sigmoid(outputs.squeeze(1))) #> 0.5).float()
+        predicted = ((torch.sigmoid(outputs.squeeze(1))) > 0.5).float()
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
     
@@ -107,11 +107,11 @@ def main():
     wandb.init(project="indios")
 
     # Parameters
-    epochs = 5000
-    learning_rate = 0.00001
-    batch_size = 256
+    epochs = 10000
+    learning_rate = 2e-5
+    batch_size = 1024
     num_workers = 8
-    samples_per_epoch = 2048
+    samples_per_epoch = 16384*4
     checkpoint_dir = "checkpoints"
     
     wandb.config.update({
@@ -121,8 +121,8 @@ def main():
         "samples_per_epoch": samples_per_epoch
     })
 
-    train_file = "data/train_data.h5"
-    validation_file = "data/validation_data.h5"
+    train_file = "data/train_split.h5"
+    validation_file = "data/validation_split.h5"
     
     data_loader_train = DataLoaderPyTorch(
         train_file,
@@ -160,11 +160,11 @@ def main():
     model = model.to(device)
 
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.0002)
     scaler = GradScaler()
     
     wandb.watch(model)
-    init_epoch=5
+    init_epoch=10
     print("Phase 1: Training only final layer")
     for epoch in range(init_epoch):
         train_subset_loader = DataLoader(
@@ -241,7 +241,7 @@ def main():
         
         if val_loss < best_loss:
             best_loss = val_loss
-            save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "best_model.pth"))
+            save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "best_modell.pth"))
 
     wandb.finish()
 

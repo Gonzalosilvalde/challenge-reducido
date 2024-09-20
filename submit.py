@@ -13,7 +13,7 @@ import submit_loader
 
 def load_model(model_path, device):
     print(f"Loading model from {model_path}")
-    model = timm.create_model("resnet18",in_chans=6, num_classes=10)
+    model = timm.create_model("resnet18",in_chans=6, num_classes=1)
     model = train.modify_resnet18(model, num_input_channels=6)
     checkpoint = torch.load(model_path, map_location=device, weights_only=True)
     model = model.to(device)
@@ -73,12 +73,12 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     
-    model_path = "checkpoints/best_model.pth"
+    model_path = "checkpoints/save/best_model.pth"
     test_file = "data/test_data.h5"
-    batch_size = 4096
-    id_map_file = 'id_map.csv'
+    batch_size = 256
+    id_map_file = 'submissions/id_map.csv'
     sample_submission_file = 'SampleSubmission.csv'
-    output_file = 'submission6.csv'
+    output_file = 'submission9.csv'
     predictions_file = 'predictions.csv'
 
     model = load_model(model_path, device)
@@ -87,12 +87,12 @@ def main():
     submit_data = submit_loader.SubmitTestLoader(test_file, batch_size=batch_size, subset_fraction=1.0)
     test_loader = submit_data.get_test_loader()
     
-    #print(f"Test loader created with {len(submit_data)} samples")
+    print(f"Test loader created with {len(test_loader.dataset)} samples")
     
     predictions, ids = predict(model, test_loader, device)
 
     
-    #save_predictions_to_json(predictions, ids, predictions_file)
+    save_predictions_to_json(predictions, ids, predictions_file)
     save_predictions_to_csv (predictions, ids, predictions_file)
     create_submission_file(predictions_file, id_map_file, output_file)
     

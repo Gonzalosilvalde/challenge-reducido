@@ -23,7 +23,8 @@ class H5Dataset(Dataset):
             np.random.seed(42)
             
             subset_indices = np.random.choice(np.arange(total_samples), self.num_samples, replace=False)
-            
+            subset_indices.sort()  # Ensure indices are in increasing order
+
             num_positive = np.sum(hdf['labels'][subset_indices] == 1)
             num_negative = self.num_samples - num_positive
             
@@ -49,7 +50,7 @@ class H5Dataset(Dataset):
             A.HorizontalFlip(p=0.3),
             A.VerticalFlip(p=0.3),
             A.RandomRotate90(p=0.3),
-            A.RandomBrightnessContrast(brightness_limit=0.1, contrast_limit=0.1, p=0.2),
+            A.RandomBrightnessContrast(brightness_limit=0.1, contrast_limit=0.1, p=0.2), # idk if this works on infrared stuff
             ToTensorV2(),
         ])
 
