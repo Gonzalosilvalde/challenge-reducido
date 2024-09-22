@@ -50,7 +50,7 @@ class H5Dataset(Dataset):
             A.HorizontalFlip(p=0.3),
             A.VerticalFlip(p=0.3),
             A.RandomRotate90(p=0.3),
-            A.RandomBrightnessContrast(brightness_limit=0.1, contrast_limit=0.1, p=0.2), # idk if this works on infrared stuff
+            #A.RandomBrightnessContrast(brightness_limit=0.1, contrast_limit=0.1, p=0.2), # idk if this works on infrared stuff
             ToTensorV2(),
         ])
 

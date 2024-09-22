@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+import torch.optim.lr_scheduler as StepLR
+
 import torch.optim as optim
 from torch.utils.data import Subset, random_split, DataLoader
 from torch.cuda.amp import GradScaler, autocast
@@ -93,8 +95,9 @@ def load_checkpoint(filename, model, optimizer, scaler):
 def modify_resnet18(model, num_input_channels=6):
     model.conv1 = nn.Conv2d(num_input_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
     model.maxpool = nn.Identity()
-    #model.fc = nn.Linear(model.fc.in_features, 1)
-    #nn.init.kaiming_normal_(model.conv1.weight, mode='fan_out', nonlinearity='relu')
+    model.fc = nn.Linear(model.fc.in_features, 1)
+    nn.init.kaiming_normal_(model.conv1.weight, mode='fan_out', nonlinearity='relu')
+    nn.init.kaiming_normal_(model.fc.weight, mode='fan_out', nonlinearity='relu')
     for param in model.parameters():
         param.requires_grad_(False)
 
@@ -108,10 +111,10 @@ def main():
 
     # Parameters
     epochs = 10000
-    learning_rate = 2e-5
-    batch_size = 1024
+    learning_rate = 1e-6
+    batch_size = 512
     num_workers = 8
-    samples_per_epoch = 16384*4
+    samples_per_epoch = 2048
     checkpoint_dir = "checkpoints"
     
     wandb.config.update({
@@ -152,7 +155,7 @@ def main():
     
     # model = Net()
     weights = ResNet18_Weights.LANDSAT_ETM_SR_MOCO
-    model = timm.create_model("resnet18", in_chans=weights.meta["in_chans"], num_classes=1)
+    model = timm.create_model("resnet18", in_chans=weights.meta["in_chans"], num_classes=10)
     #print(model)
     model.load_state_dict(weights.get_state_dict(progress=True), strict=False)
 
@@ -160,7 +163,7 @@ def main():
     model = model.to(device)
 
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.0002)
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
     scaler = GradScaler()
     
     wandb.watch(model)
@@ -202,7 +205,9 @@ def main():
     for param in model.parameters():
         param.requires_grad_(True)
     
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.AdamW(model.parameters(), lr=learning_rate)
+    scheduler = StepLR(optimizer, step_size=5, gamma=0.1)
+
 
     best_loss = float('inf')
     for epoch in range(init_epoch, epochs):
@@ -223,7 +228,8 @@ def main():
         
         train_loss, train_accuracy = train_model(model, train_subset_loader, criterion, optimizer, device, scaler)
         val_loss, val_accuracy = validate_model(model, val_subset_loader, criterion, device)
-        
+        scheduler.step()
+
         print(f'Epoch [{epoch+1}/{epochs}]')
         print(f'Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
         print(f'Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}')
@@ -241,7 +247,7 @@ def main():
         
         if val_loss < best_loss:
             best_loss = val_loss
-            save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "best_modell.pth"))
+            save_checkpoint(epoch, model, optimizer, scaler, val_loss, val_accuracy, os.path.join(checkpoint_dir, "best_model.pth"))
 
     wandb.finish()
 

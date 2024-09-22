@@ -11,13 +11,14 @@
 ### TODO:
   - The initial random subset selection of dataset is not optimal, also oversampling minority class can lead to overfitting...
     - weighted loss / Weighted cross entropy?
+    -crossvalidation!? https://scikit-learn.org/stable/modules/cross_validation.html
   - https://pytorch.org/docs/stable/bottleneck.html
   - Finetune gradual unfreezing (started on gonzalo branch)
     - Discriminative learning rates
     - Deeper layers (closer to the input) learn more general, low-level features that are often transferable across tasks -> low learning rates
     - Later layers (closer to the output) learn more task-specific, high-level features. -> higher learning reate
-    - Upscale sat images? resolution might be too low, read on this
-    - Refactor to pytorch lightning¿
+  - Upscale sat images? resolution might be too low, read on this
+  - Refactor to pytorch lightning¿
 
 ### Resources
 
