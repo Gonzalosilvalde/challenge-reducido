@@ -32,6 +32,7 @@ def load_model(model_path, device):
     return model
 
 def preprocess_for_xgboost(inputs):
+    #USE PROCESS FROM BOOST.PY
     # Flatten 16x16x6 to 1536
     inputs_flattened = inputs.reshape(inputs.shape[0], -1)
     # Normalize to [0, 1]
@@ -93,9 +94,9 @@ def main():
     
     model_path = "checkpoints/xgboost_model.json" #"checkpoints/best_model.pth" 
     test_file = "data/test_data.h5"
-    batch_size = 256
+    batch_size = 2048
     id_map_file = 'submissions/id_map.csv'
-    output_file = 'submission10.csv'
+    output_file = 'submission12csv'
     predictions_file = 'predictions.csv'
 
     model = load_model(model_path, device)
