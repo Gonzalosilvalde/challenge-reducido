@@ -90,18 +90,28 @@ def load_checkpoint(filename, model, optimizer, scaler):
         print(f"No checkpoint found at: {filename}")
         return 0, float('inf'), 0
 
-def modify_resnet18(model, num_input_channels=6):
-    model.conv1 = nn.Conv2d(num_input_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
-    model.maxpool = nn.Identity()
-    #model.fc = nn.Linear(model.fc.in_features, 1)
-    #nn.init.kaiming_normal_(model.conv1.weight, mode='fan_out', nonlinearity='relu')
-    for param in model.parameters():
-        param.requires_grad_(False)
+def modify_resnet_gradual(model, num_input_channels=6, freeze_layers=True):
+    
 
+    # Modificamos la primera capa conv para 6 canales
+    model.conv1 = nn.Conv2d(num_input_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
+    model.maxpool = nn.Identity()  # Eliminar max pooling
+    #model.fc = nn.Linear(model.fc.in_features, 1)  # Ajustar la salida
+    
+    # Congelamos todas las capas inicialmente
+    if freeze_layers:
+        for param in model.parameters():
+            param.requires_grad_(False)
+
+    # Descongelamos ciertas capas clave progresivamente
+    model.layer3.requires_grad_(True)  # Descongelamos la capa 3 
+    model.fc.requires_grad_(True)      # Descongelamos la capa final
+    
+    # Mantener conv1 también ajustable si es necesario
     model.conv1.requires_grad_(True)
-    model.fc.requires_grad_(True)
     
     return model
+
 
 def main():
     wandb.init(project="indios")
@@ -162,7 +172,7 @@ def main():
     #print(model)
     model.load_state_dict(weights.get_state_dict(progress=True), strict=False)
 
-    model = modify_resnet18(model, num_input_channels=6)
+    model = modify_resnet_gradual(model, num_input_channels=6)
     model = model.to(device)
 
     criterion = nn.BCEWithLogitsLoss()
